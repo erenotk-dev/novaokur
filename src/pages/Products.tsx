@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Filter, ShoppingCart, Eye, X } from 'lucide-react';
+import { Search, Filter, ShoppingCart, Eye, X, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
 import '../styles/Products.css';
@@ -66,8 +66,13 @@ const Products = () => {
   return (
     <div className="products-layout">
       {/* Navbar (Ortak Bilesenler Olarak Ayrilacak) */}
-      <nav className="glass-panel navbar" style={{ position: 'relative', marginTop: '24px', marginBottom: '40px' }}>
-        <div className="nav-brand"><a href="/">NovaOkur</a></div>
+      <nav className="glass-panel navbar">
+        <div className="nav-brand">
+          <a href="/">
+            <BookOpen className="brand-icon" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '8px' }} />
+            <span>NovaOkur</span>
+          </a>
+        </div>
         <div className="nav-links">
           <a href="/products" className="active-link">Ürünler</a>
           <a href="/blog">Blog</a>
@@ -77,7 +82,7 @@ const Products = () => {
           <a href="/cart" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
             <ShoppingCart size={20}/>
             {cartCount > 0 && (
-              <span style={{ position: 'absolute', top: '-8px', right: '-12px', background: 'var(--accent-color)', color: 'white', fontSize: '0.7rem', padding: '2px 6px', borderRadius: '10px', fontWeight: 'bold' }}>
+              <span className="cart-badge" style={{ position: 'absolute', top: '-8px', right: '-12px', background: 'var(--accent-color)', color: 'white', fontSize: '0.7rem', padding: '2px 6px', borderRadius: '10px', fontWeight: 'bold' }}>
                 {cartCount}
               </span>
             )}
