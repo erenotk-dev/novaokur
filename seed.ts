@@ -49,7 +49,7 @@ async function main() {
       title: 'Suç ve Ceza - Keten Cilt (Dostoyevski)', 
       description: 'Rus edebiyatının zirve noktalarından biri olan Suç ve Ceza, Raskolnikov\'un psikolojik buhranlarını en derin şekilde hissettiren eşsiz bir eser.\n\nBu özel baskı, esnemeyen keten cildi ve altın varaklı sırt yazılarıyla kütüphanenizin baş köşesinde yer almayı hak ediyor.', 
       price: 210.00, type: 'BOOK', format: 'PHYSICAL', stock: 65,
-      imageUrl: 'https://images.unsplash.com/photo-1456615074700-1dc12aa7364d?w=500&q=80' 
+      imageUrl: 'https://images.unsplash.com/photo-1543004218-ee141104308d?w=500&q=80' 
     },
 
     // ----------------------------------------------------
@@ -60,14 +60,14 @@ async function main() {
       title: 'Socrates & Nitelikli Kahve (Aylık Kutu Seti)', 
       description: 'Her ay spor kültürünün en kaliteli yazılarını kahvenizi yudumlayarak okuma ayrıcalığına sahip olun. Bu özel paketimiz aylık olarak özenle hazırlanır ve kapınıza teslim edilir.\n\nPaket İçeriği:\n- 1 Adet Socrates Aylık Spor Dergisi\n- 100gr Taze Kavrulmuş Filtre Kahve\n- NovaOkur Özel Tasarım Ayraç', 
       price: 185.0, type: 'MAGAZINE', format: 'PHYSICAL', stock: 45, // Kritik stok ornegi
-      imageUrl: 'https://images.unsplash.com/photo-1540324155970-145aa81444de?w=500&q=80' 
+      imageUrl: 'https://images.unsplash.com/photo-1504711331083-9c895941bf81?w=500&q=80' 
     },
     { 
       id: 'd2_national', 
       title: 'Gezegenin Keşfi (Fotoğraf Dergisi - PDF)', 
       description: 'Dünyanın en ücra köşelerinden, nefes kesen doğa olaylarına ve nesli tükenmekte olan canlı türlerine dair muhteşem bir görsel şölen.\n\nBu yüksek çözünürlüklü dijital dergiyi tabletinizden veya bilgisayarınızdan tüm detaylarıyla inceleyebilirsiniz.', 
       price: 19.90, type: 'MAGAZINE', format: 'DIGITAL', stock: 9999,
-      imageUrl: 'https://images.unsplash.com/photo-1498677231914-50efe6bd8f16?w=500&q=80' 
+      imageUrl: 'https://images.unsplash.com/photo-1541675154750-0444c7d51e8e?w=500&q=80' 
     },
     { 
       id: 'd3_kafkaokur', 

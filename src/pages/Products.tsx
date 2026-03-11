@@ -23,6 +23,16 @@ const Products = () => {
   
   const [isAdmin, setIsAdmin] = useState(false);
   const [previewItem, setPreviewItem] = useState<Product | null>(null);
+  
+  // Modal acikken scroll'u engelle (Mobil Fix)
+  useEffect(() => {
+    if (previewItem) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    return () => document.body.classList.remove('modal-open');
+  }, [previewItem]);
 
   useEffect(() => {
     // Admin Rol Kontrolu

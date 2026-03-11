@@ -98,9 +98,56 @@ ul {
   border-color: var(--text-secondary);
 }
 
+/* Responsive Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 32px;
+  position: sticky;
+  top: 20px;
+  z-index: 100;
+  margin: 0 24px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 12px 16px;
+    margin: 10px 12px;
+  }
+  .nav-links {
+    gap: 12px;
+    font-size: 0.85rem;
+  }
+  .nav-brand span {
+    display: none; /* Mobilde sadece ikon kalsın yer açmak için */
+  }
+  .nav-links .btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Modal Open - Body Scroll Lock */
+body.modal-open {
+  overflow: hidden;
+}
+
 /* Layout */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 0 16px;
+  }
 }
