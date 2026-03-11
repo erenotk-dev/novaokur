@@ -1,0 +1,255 @@
+.checkout-layout {
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 40px;
+  align-items: start;
+}
+
+.form-section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: white;
+}
+
+.payment-form {
+  padding: 32px;
+  border-radius: 20px;
+}
+
+.form-divider {
+  border: none;
+  height: 1px;
+  background: var(--glass-border);
+  margin: 32px 0;
+}
+
+.pay-btn {
+  margin-top: 24px;
+  padding: 16px;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.pay-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.payment-trust-signals {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.card-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card-brand.visa {
+  color: #1A1F71;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.card-brand.mc {
+  background: linear-gradient(to right, #EB001B 50%, #F79E1B 50%);
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-transform: lowercase;
+}
+
+.card-brand.troy {
+  color: #00A9E0;
+}
+
+.card-brand.amex {
+  background: #002663;
+  color: white;
+}
+
+.secure-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-top: 16px;
+}
+
+/* Sağ Taraf - Sipariș Özeti */
+.sticky-summary {
+  position: sticky;
+  top: 40px;
+}
+
+.checkout-items-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 8px;
+  margin-bottom: 24px;
+}
+
+.checkout-items-mini::-webkit-scrollbar {
+  width: 6px;
+}
+.checkout-items-mini::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.mini-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mini-image {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mini-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mini-qty {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: var(--text-secondary);
+  color: var(--bg-primary);
+  font-size: 0.75rem;
+  font-weight: bold;
+  height: 20px;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid var(--bg-primary);
+}
+
+.mini-details h4 {
+  font-size: 0.95rem;
+  margin-bottom: 4px;
+  color: white;
+}
+
+.mini-details span {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.accent-text {
+  color: var(--accent-color) !important;
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+
+/* Başarı Ekranı Modu */
+.success-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.success-card {
+  text-align: center;
+  padding: 48px 32px;
+  max-width: 500px;
+  border-radius: 24px;
+}
+
+.success-icon-wrapper {
+  margin-bottom: 24px;
+  animation: scaleBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes scaleBounce {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+@media (max-width: 900px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+/* Yüzen Etiket (Floating Label) Tasarımı */
+.floating-group {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.floating-group input {
+  width: 100%;
+  padding: 24px 16px 8px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.floating-group input:focus {
+  border-color: var(--accent-color);
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+}
+
+.floating-group label {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 1rem;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Input Focus Oldugunda veya Icerisi Dolu Oldugunda Label Yukari Kysinyor */
+.floating-group input:focus + label,
+.floating-group input:not(:placeholder-shown) + label {
+  top: 12px;
+  font-size: 0.75rem;
+  color: var(--accent-color);
+  font-weight: 500;
+}

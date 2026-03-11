@@ -1,0 +1,104 @@
+.info-layout {
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+.info-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 40px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.info-icon {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 50%;
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+}
+
+.info-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  margin: 0;
+}
+
+.info-content-box {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 60px;
+}
+
+.info-html-content h2 {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  margin: 40px 0 16px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 12px;
+}
+
+.info-html-content h2:first-child {
+  margin-top: 0;
+}
+
+.info-html-content p {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-size: 1.05rem;
+  margin-bottom: 16px;
+}
+
+.info-html-content ul {
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-size: 1.05rem;
+  margin-bottom: 24px;
+  padding-left: 20px;
+}
+
+.info-html-content li {
+  margin-bottom: 8px;
+}
+
+.faq-item {
+  margin-bottom: 32px;
+}
+
+.faq-item h3 {
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.faq-item h3::before {
+  content: "Q.";
+  color: var(--accent-light);
+  font-weight: 800;
+}
+
+.faq-item p {
+  padding-left: 24px;
+  border-left: 2px solid rgba(255,255,255,0.1);
+}
+
+.info-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+@media (max-width: 768px) {
+  .info-header h1 {
+    font-size: 2.2rem;
+  }
+  .info-content-box {
+    padding: 30px 20px;
+  }
+}

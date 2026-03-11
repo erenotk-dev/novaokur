@@ -1,0 +1,131 @@
+.subs-layout {
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+.subs-container {
+  margin-top: 60px;
+}
+
+.subs-header {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  margin-bottom: 60px;
+}
+
+.subs-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.subs-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.plan-card {
+  position: relative;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.plan-card:hover {
+  transform: translateY(-8px);
+}
+
+.popular-plan {
+  border-color: var(--accent-color);
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+}
+
+.popular-badge {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent-color);
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.plan-header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.plan-icon {
+  margin-bottom: 16px;
+  width: 48px;
+  height: 48px;
+}
+
+.plan-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.plan-price-box {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+}
+
+.plan-price {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: white;
+}
+
+.plan-period {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.plan-features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 40px;
+  flex-grow: 1;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.check-icon {
+  color: #10b981; /* Yesil onay */
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .subs-title { font-size: 2rem; }
+  .plan-card { padding: 32px 24px; }
+}
