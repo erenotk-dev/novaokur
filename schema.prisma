@@ -1,0 +1,144 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// -------------------------------------
+// KULLANICI YONETIMI (AUTH & USERS)
+// -------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?
+  role          String    @default("USER") // "USER" veya "ADMIN"
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  orders        Order[]
+  subscriptions Subscription[]
+  reviews       Review[]
+}
+
+// -------------------------------------
+// E-TICARET (URUNLER & KATEGORILER)
+// -------------------------------------
+
+model Product {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  price       Float
+  stock       Int       @default(0)
+  imageUrl    String?
+  type        String    @default("BOOK") // "BOOK" veya "MAGAZINE"
+  format      String    @default("PHYSICAL") // "PHYSICAL" veya "DIGITAL"
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  
+  orderItems  OrderItem[]
+  reviews     Review[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int      @default(5)
+  comment   String
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  products    Product[]
+}
+
+model Order {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  status      String   @default("PENDING") // "PENDING", "COMPLETED", "CANCELLED"
+  totalAmount Float
+  createdAt   DateTime @default(now())
+  
+  items       OrderItem[]
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  price     Float
+}
+
+// -------------------------------------
+// ABONELIK SISTEMI
+// -------------------------------------
+
+model Subscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  planId    String
+  plan      Plan     @relation(fields: [planId], references: [id])
+  status    String   @default("ACTIVE") // "ACTIVE", "EXPIRED", "CANCELLED"
+  startDate DateTime @default(now())
+  endDate   DateTime
+}
+
+model Plan {
+  id            String         @id @default(cuid())
+  name          String         @unique 
+  description   String?
+  price         Float
+  durationDays  Int            @default(30)
+  
+  subscriptions Subscription[]
+}
+
+// -------------------------------------
+// BLOG SISTEMI
+// -------------------------------------
+
+model Post {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  content     String
+  imageUrl    String?
+  published   Boolean  @default(false)
+  authorName  String   @default("Admin")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// -------------------------------------
+// SITE YONETIMI (CMS)
+// -------------------------------------
+
+model SiteSettings {
+  id             String   @id @default(cuid())
+  heroTitle      String   @default("Sınırsız Bilgi ve Hikaye Evreni")
+  heroSubtitle   String   @default("Binlerce kitap ve dergi bir tık uzağında. İster dijital oku, ister fiziksel kütüpheneni büyüt. Aylık aboneliklerle sınırları kaldır.")
+  bannerTitle    String   @default("NovaOkur Premium")
+  bannerDesc     String   @default("Dijital kitap arşivine limitsiz erişim ve her ay kapına gelen ücretsiz fiziksel dergiler... Okuma deneyimini baştan yaratmaya hazır mısın?")
+  updatedAt      DateTime @updatedAt
+}
