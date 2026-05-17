@@ -203,21 +203,24 @@ ul {
 @media (max-width: 768px) {
   .navbar {
     padding: 8px 12px;
-    width: 98%;
-    top: 10px;
+    width: 90%; /* Kenarlardan içeri çekildi, daha şık yüzen kapsül görüntüsü verildi */
+    top: 16px;
+  }
+  .brand-logo {
+    height: 30px !important; /* Logoyu küçülterek yatayda yer kazandırıyoruz */
   }
   .nav-links {
-    gap: 10px;
+    gap: 8px; /* Öğelerin arasındaki boşluğu daralttık */
   }
   .nav-brand span {
     display: none;
   }
   .nav-links a {
-    font-size: 0.8rem;
+    font-size: 0.72rem; /* Sığması için yazı boyutunu azıcık küçülttük */
   }
   .nav-links .btn {
-    padding: 6px 10px;
-    font-size: 0.75rem;
+    padding: 6px 8px; /* Hesabım butonunun taşmasını önlemek için padding daraltıldı */
+    font-size: 0.72rem;
   }
 }
 

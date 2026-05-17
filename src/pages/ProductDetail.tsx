@@ -24,9 +24,34 @@ interface Review {
   user: { name: string };
 }
 
+
+const parseProductDescription = (rawDesc: string) => {
+  const defaultValues = {
+    description: rawDesc || '',
+    criticalStock: 45,
+    criticalStockText: 'Kritik Stok Uyarısı!'
+  };
+  
+  if (!rawDesc) return defaultValues;
+  
+  const stockMatch = rawDesc.match(/\[CRITICAL_STOCK:(\d+)\]/);
+  const textMatch = rawDesc.match(/\[CRITICAL_STOCK_TEXT:([^\]]+)\]/);
+  
+  let cleanDesc = rawDesc;
+  if (stockMatch) cleanDesc = cleanDesc.replace(stockMatch[0], '');
+  if (textMatch) cleanDesc = cleanDesc.replace(textMatch[0], '');
+  
+  return {
+    description: cleanDesc.trim(),
+    criticalStock: stockMatch ? parseInt(stockMatch[1]) : 45,
+    criticalStockText: textMatch ? textMatch[1] : 'Kritik Stok Uyarısı!'
+  };
+};
+
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const parsedData = product ? parseProductDescription(product.description) : { description: '', criticalStock: 45, criticalStockText: 'Kritik Stok Uyarısı!' };
   const [product, setProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [recommendations, setRecommendations] = useState<Product[]>([]);
@@ -138,10 +163,14 @@ const ProductDetail = () => {
              <span className="badge-type">{product.type === 'BOOK' ? 'Kitap' : 'Dergi'}</span>
              <h1>{product.title}</h1>
              <div className="price-tag">{product.price} ₺</div>
+             {product.format === 'PHYSICAL' && product.stock <= parsedData.criticalStock && (
+               <div className="critical-stock-alert" style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', color: '#fca5a5', padding: '12px 18px', borderRadius: '12px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold', fontSize: '0.95rem' }}>
+                 ⚠️ {parsedData.criticalStockText} (Stokta Son {product.stock} Adet!)
+               </div>
+             )}
              <div className="description">
                 <div className={!isExpanded ? 'clamped-text' : ''}>
-                  {product.description ? 
-                    product.description.split('\n').map((line, i) => (
+                  {parsedData.description ? parsedData.description.split('\n').map((line, i) => (
                       <p key={i} style={{ minHeight: line.trim() === '' ? '14px' : 'auto', margin: '0 0 8px 0' }}>
                         {line}
                       </p>

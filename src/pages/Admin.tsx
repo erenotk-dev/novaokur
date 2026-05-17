@@ -5,6 +5,33 @@ import toast from 'react-hot-toast';
 import ImageUpload from '../components/ImageUpload';
 import '../styles/Admin.css';
 
+const parseProductDescription = (rawDesc: string) => {
+  const defaultValues = {
+    description: rawDesc || '',
+    criticalStock: 45,
+    criticalStockText: 'Kritik Stok Uyarısı!'
+  };
+  
+  if (!rawDesc) return defaultValues;
+  
+  const stockMatch = rawDesc.match(/\[CRITICAL_STOCK:(\d+)\]/);
+  const textMatch = rawDesc.match(/\[CRITICAL_STOCK_TEXT:([^\]]+)\]/);
+  
+  let cleanDesc = rawDesc;
+  if (stockMatch) cleanDesc = cleanDesc.replace(stockMatch[0], '');
+  if (textMatch) cleanDesc = cleanDesc.replace(textMatch[0], '');
+  
+  return {
+    description: cleanDesc.trim(),
+    criticalStock: stockMatch ? parseInt(stockMatch[1]) : 45,
+    criticalStockText: textMatch ? textMatch[1] : 'Kritik Stok Uyarısı!'
+  };
+};
+
+const buildRawDescription = (desc: string, criticalStock: number, criticalStockText: string) => {
+  return `${desc.trim()} [CRITICAL_STOCK:${criticalStock}] [CRITICAL_STOCK_TEXT:${criticalStockText}]`;
+};
+
 interface Product {
   id: string;
   title: string;
@@ -15,6 +42,8 @@ interface Product {
   format: string;
   stock: number;
   imageUrl: string;
+  criticalStock?: number;
+  criticalStockText?: string;
 }
 
 interface BlogPost {
@@ -30,7 +59,16 @@ const Admin = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   
   const [formData, setFormData] = useState({
-    title: '', description: '', price: '', costPrice: '', type: 'BOOK', format: 'PHYSICAL', stock: '', imageUrl: ''
+    title: '', 
+    description: '', 
+    price: '', 
+    costPrice: '', 
+    type: 'BOOK', 
+    format: 'PHYSICAL', 
+    stock: '', 
+    imageUrl: '',
+    criticalStock: 45,
+    criticalStockText: 'Kritik Stok Uyarısı!'
   });
 
   const [blogData, setBlogData] = useState({
@@ -42,7 +80,7 @@ const Admin = () => {
   });
 
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
-  const [editFormData, setEditFormData] = useState<Product | null>(null);
+  const [editFormData, setEditFormData] = useState<any>(null);
   
   const [editingBlogId, setEditingBlogId] = useState<string | null>(null);
   const [editBlogData, setEditBlogData] = useState<BlogPost & { content?: string; imageUrl?: string } | null>(null);
@@ -82,9 +120,24 @@ const Admin = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post('https://novaokur.onrender.com/api/products', formData);
+      const rawDesc = buildRawDescription(formData.description, formData.criticalStock, formData.criticalStockText);
+      await axios.post('https://novaokur.onrender.com/api/products', {
+        ...formData,
+        description: rawDesc
+      });
       toast.success('Ürün başarıyla eklendi!');
-      setFormData({ title: '', description: '', price: '', costPrice: '', type: 'BOOK', format: 'PHYSICAL', stock: '', imageUrl: '' });
+      setFormData({ 
+        title: '', 
+        description: '', 
+        price: '', 
+        costPrice: '', 
+        type: 'BOOK', 
+        format: 'PHYSICAL', 
+        stock: '', 
+        imageUrl: '',
+        criticalStock: 45,
+        criticalStockText: 'Kritik Stok Uyarısı!'
+      });
       fetchData(); // Listeyi guncelle
     } catch (error) {
        toast.error('Ürün eklenirken hata oluştu.');
@@ -119,7 +172,11 @@ const Admin = () => {
   const handleUpdateProduct = async (id: string) => {
     if (!editFormData) return;
     try {
-      await axios.put(`https://novaokur.onrender.com/api/products/${id}`, editFormData);
+      const rawDesc = buildRawDescription(editFormData.description, editFormData.criticalStock, editFormData.criticalStockText);
+      await axios.put(`https://novaokur.onrender.com/api/products/${id}`, {
+        ...editFormData,
+        description: rawDesc
+      });
       toast.success('Ürün başarıyla güncellendi!');
       setEditingProductId(null);
       setEditFormData(null);
@@ -130,8 +187,14 @@ const Admin = () => {
   };
 
   const startEditing = (product: Product) => {
+    const parsed = parseProductDescription(product.description);
     setEditingProductId(product.id);
-    setEditFormData(product);
+    setEditFormData({
+      ...product,
+      description: parsed.description,
+      criticalStock: parsed.criticalStock,
+      criticalStockText: parsed.criticalStockText
+    });
   };
 
   const handleUpdateBlog = async (id: string) => {
@@ -242,15 +305,15 @@ const Admin = () => {
              <div className="glass-panel list-section">
                 <h2 style={{ color: '#ef4444' }}><Package /> Kritik Stok Uyarıları (Yeniden Sipariş)</h2>
                 <div className="admin-product-list" style={{ background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '16px', borderRadius: '16px' }}>
-                   {products.filter(p => p.format === 'PHYSICAL' && p.stock <= 45).length === 0 ? (
+                   {products.filter(p => { const parsed = parseProductDescription(p.description); return p.format === 'PHYSICAL' && p.stock <= parsed.criticalStock; }).length === 0 ? (
                      <p className="text-secondary" style={{margin: 0}}>Tüm fiziksel ürün stokları yeterli seviyede.</p>
                    ) : (
-                     products.filter(p => p.format === 'PHYSICAL' && p.stock <= 45).map(p => (
+                     products.filter(p => { const parsed = parseProductDescription(p.description); return p.format === 'PHYSICAL' && p.stock <= parsed.criticalStock; }).map(p => (
                        <div key={`alert-${p.id}`} className="admin-product-item" style={{ background: 'rgba(0,0,0,0.3)', borderLeft: '4px solid #ef4444', marginBottom: '8px' }}>
                           <div className="info">
                              <strong style={{ color: '#fca5a5' }}>{p.title}</strong>
                              <span className="badge-sm" style={{ background: '#ef4444', color: 'white' }}>Kalan: {p.stock} Adet</span>
-                             <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Tedarikçiyi Ara!</span>
+                             <span style={{ fontSize: '0.85rem', color: '#fbbf24', fontWeight: '500', display: 'block', marginTop: '4px' }}>⚠️ {parseProductDescription(p.description).criticalStockText} (Limit: {parseProductDescription(p.description).criticalStock})</span>
                           </div>
                        </div>
                      ))
@@ -288,9 +351,20 @@ const Admin = () => {
                    </div>
 
                    <div className="form-group">
-                     <label>Stok Adedi</label>
-                     <input required type="number" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} />
-                   </div>
+                      <label>Stok Adedi</label>
+                      <input required type="number" value={formData.stock} onChange={e => setFormData({...formData, stock: e.target.value})} />
+                    </div>
+
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Kritik Stok Sınırı (Sayı)</label>
+                        <input required type="number" value={formData.criticalStock} onChange={e => setFormData({...formData, criticalStock: parseInt(e.target.value) || 0})} />
+                      </div>
+                      <div className="form-group">
+                        <label>Kritik Stok Uyarı Metni</label>
+                        <input required type="text" value={formData.criticalStockText} onChange={e => setFormData({...formData, criticalStockText: e.target.value})} placeholder="Örn: Kritik Stok Uyarısı!" />
+                      </div>
+                    </div>
 
                    <div className="form-row">
                      <div className="form-group">
@@ -450,9 +524,20 @@ const Admin = () => {
                     </div>
                   </div>
                   <div className="form-group">
-                    <label>Stok Adedi</label>
-                    <input type="number" value={editFormData.stock} onChange={e => setEditFormData({...editFormData, stock: e.target.value ? parseInt(e.target.value) : 0})} />
-                  </div>
+                     <label>Stok Adedi</label>
+                     <input type="number" value={editFormData.stock} onChange={e => setEditFormData({...editFormData, stock: e.target.value ? parseInt(e.target.value) : 0})} />
+                   </div>
+
+                   <div className="form-row">
+                     <div className="form-group">
+                       <label>Kritik Stok Sınırı (Sayı)</label>
+                       <input type="number" value={editFormData.criticalStock} onChange={e => setEditFormData({...editFormData, criticalStock: e.target.value ? parseInt(e.target.value) : 0})} />
+                     </div>
+                     <div className="form-group">
+                       <label>Kritik Stok Uyarı Metni</label>
+                       <input type="text" value={editFormData.criticalStockText} onChange={e => setEditFormData({...editFormData, criticalStockText: e.target.value})} />
+                     </div>
+                   </div>
                   <div className="form-row">
                      <div className="form-group">
                        <label>Tür</label>

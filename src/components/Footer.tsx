@@ -3,6 +3,21 @@ import axios from 'axios';
 import { MapPin, Phone, Mail, ShieldCheck, CreditCard, Clock, Instagram, Twitter } from 'lucide-react';
 import '../styles/Footer.css';
 
+const formatSocialLink = (url: string, platform: 'instagram' | 'twitter') => {
+  if (!url) return '';
+  const trimmed = url.trim();
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+  if (trimmed.startsWith('@') || !trimmed.includes('/')) {
+    const cleanUsername = trimmed.startsWith('@') ? trimmed.slice(1) : trimmed;
+    return platform === 'instagram' 
+      ? `https://instagram.com/${cleanUsername}` 
+      : `https://twitter.com/${cleanUsername}`;
+  }
+  return `https://${trimmed}`;
+};
+
 const Footer = () => {
   const [socialLinks, setSocialLinks] = useState({ 
     instagram: 'https://instagram.com/novaokur', 
@@ -13,9 +28,6 @@ const Footer = () => {
     axios.get('https://novaokur.onrender.com/api/settings')
       .then(res => {
         if (res.data) {
-          // Eger veritabanindan null gelirse gizlemek icin bos string aliyoruz, 
-          // eger deger varsa o degeri atiyoruz. Ancak yeni eklendigi icin
-          // eger undefined gelirse (eski sunucu) varsayilanlari bozmuyoruz.
           if (res.data.instagramUrl !== undefined) {
              setSocialLinks({
                instagram: res.data.instagramUrl || '',
@@ -41,12 +53,12 @@ const Footer = () => {
           </p>
           <div className="social-links" style={{ display: 'flex', gap: '15px', marginTop: '15px', marginBottom: '20px' }}>
             {socialLinks.instagram && (
-              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="social-icon" style={{ color: 'var(--text-secondary)', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E1306C'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}>
+              <a href={formatSocialLink(socialLinks.instagram, 'instagram')} target="_blank" rel="noopener noreferrer" className="social-icon" style={{ color: 'var(--text-secondary)', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E1306C'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}>
                 <Instagram size={24} />
               </a>
             )}
             {socialLinks.twitter && (
-              <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="social-icon" style={{ color: 'var(--text-secondary)', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#1DA1F2'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}>
+              <a href={formatSocialLink(socialLinks.twitter, 'twitter')} target="_blank" rel="noopener noreferrer" className="social-icon" style={{ color: 'var(--text-secondary)', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#1DA1F2'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}>
                 <Twitter size={24} />
               </a>
             )}
