@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ShoppingCart, Star, MessageSquare, ArrowLeft, ArrowRight, TrendingUp, BookOpen } from 'lucide-react';
+import { ShoppingCart, Star, MessageSquare, ArrowLeft, ArrowRight, TrendingUp } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import toast from 'react-hot-toast';
 import '../styles/ProductDetail.css';

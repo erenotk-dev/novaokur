@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BookOpen, MapPin, Phone, Mail, ShieldCheck, CreditCard, Clock, Instagram, Twitter } from 'lucide-react';
+import { MapPin, Phone, Mail, ShieldCheck, CreditCard, Clock, Instagram, Twitter } from 'lucide-react';
 import '../styles/Footer.css';
 
 const Footer = () => {

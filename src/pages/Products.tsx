@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Filter, ShoppingCart, Eye, X, BookOpen } from 'lucide-react';
+import { Search, Filter, ShoppingCart, Eye, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
 import toast from 'react-hot-toast';
