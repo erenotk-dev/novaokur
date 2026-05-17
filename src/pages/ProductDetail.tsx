@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ShoppingCart, Star, MessageSquare, ArrowLeft } from 'lucide-react';
+import { ShoppingCart, Star, MessageSquare, ArrowLeft, TrendingUp, ArrowRight } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import toast from 'react-hot-toast';
 import '../styles/ProductDetail.css';
@@ -52,8 +52,8 @@ const parseProductDescription = (rawDesc: string) => {
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const parsedData = product ? parseProductDescription(product.description) : { description: '', criticalStock: 45, criticalStockText: 'Kritik Stok Uyarısı!' };
   const [product, setProduct] = useState<Product | null>(null);
+  const parsedData = product ? parseProductDescription(product.description) : { description: '', criticalStock: 45, criticalStockText: 'Kritik Stok Uyarısı!' };
   const [reviews, setReviews] = useState<Review[]>([]);
   const [recommendations, setRecommendations] = useState<Product[]>([]);
   
