@@ -52,7 +52,11 @@ const Subscriptions = () => {
     <div className="subs-layout">
       {/* Navbar (Ortak Bilesenler Olarak Ayrilacak) */}
       <nav className="glass-panel navbar" style={{ position: 'relative', marginTop: '24px', marginBottom: '40px' }}>
-        <div className="nav-brand"><a href="/">NovaOkur</a></div>
+        <div className="nav-brand">
+          <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src="/logo.svg" alt="NovaOkur Logo" className="brand-logo" />
+          </a>
+        </div>
       </nav>
 
       <div className="container subs-container animate-fade-in">

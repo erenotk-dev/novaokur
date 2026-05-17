@@ -6,16 +6,9 @@ const Cart = () => {
   const { items, removeItem, updateQuantity, getTotalPrice } = useCartStore();
 
   const handleCheckout = () => {
-    const userStr = localStorage.getItem('nova_user');
-    if (!userStr) {
-      alert("Siparişi tamamlamak için lütfen giriş yapın veya kayıt olun.");
-      window.location.href = '/auth/login';
-      return;
-    }
-
     if (items.length === 0) return;
 
-    // Profesyonel Checkout sayfasina yonlendir
+    // Profesyonel Checkout sayfasina yonlendir (Misafir veya Kayitli)
     window.location.href = '/checkout';
   };
 
@@ -23,7 +16,11 @@ const Cart = () => {
     <div className="cart-layout">
       {/* Navbar Ozet */}
       <nav className="glass-panel navbar" style={{ position: 'relative', marginTop: '24px', marginBottom: '40px' }}>
-        <div className="nav-brand"><a href="/">NovaOkur</a></div>
+        <div className="nav-brand">
+          <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src="/logo.svg" alt="NovaOkur Logo" className="brand-logo" />
+          </a>
+        </div>
         <div className="nav-links">
           <a href="/products">Alışverişe Devam Et</a>
         </div>
@@ -31,6 +28,22 @@ const Cart = () => {
 
       <div className="container cart-container animate-fade-in">
         <h1 className="cart-title"><ShoppingCart className="title-icon" /> Sepetim</h1>
+
+        {items.length > 0 && (
+          <div className="free-shipping-container glass-panel animate-fade-in">
+            {getTotalPrice() >= 150 ? (
+              <p className="free-shipping-msg success">🎉 Tebrikler! Kargo ücreti bizden.</p>
+            ) : (
+              <p className="free-shipping-msg">Kargo bedava için <strong>{(150 - getTotalPrice()).toFixed(2)} ₺</strong> daha ekleyin.</p>
+            )}
+            <div className="progress-bar-bg">
+              <div 
+                className="progress-bar-fill" 
+                style={{ width: `${Math.min((getTotalPrice() / 150) * 100, 100)}%` }}
+              ></div>
+            </div>
+          </div>
+        )}
 
         {items.length === 0 ? (
            <div className="empty-cart glass-panel delay-1">

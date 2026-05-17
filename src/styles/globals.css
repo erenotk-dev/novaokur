@@ -19,11 +19,54 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background-color: var(--bg-primary);
+  background-image: url('/hero-bg.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Parallax efekti için sabitlendi */
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
+}
+
+.stardust-canvas-global {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.global-bg-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  /* Tüm sayfa boyunca yavaşça kararan degrade filtre */
+  background: linear-gradient(to bottom, rgba(10, 10, 15, 0.7) 0%, rgba(10, 10, 15, 0.92) 50%, rgba(10, 10, 15, 0.98) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Tüm sayfa sarmalayıcılarının arka plan overlay ve stardust katmanının üzerinde görünmesini sağlar */
+.home-wrapper,
+.products-layout,
+.subscriptions-layout,
+.cart-layout,
+.checkout-layout,
+.admin-layout,
+.auth-layout,
+.contact-layout,
+.info-layout,
+.blog-layout,
+.product-detail-layout,
+.blog-detail-layout {
+  position: relative;
+  z-index: 2;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -98,6 +141,43 @@ ul {
   border-color: var(--text-secondary);
 }
 
+/* Professional Logo Styling */
+.nav-brand a {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-decoration: none;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.nav-brand a:hover {
+  transform: scale(1.02);
+  opacity: 0.9;
+}
+
+.nav-brand a .brand-icon {
+  color: #fff !important;
+  background: linear-gradient(135deg, var(--accent-color), #818cf8);
+  border-radius: 10px;
+  padding: 6px;
+  width: 40px !important;
+  height: 40px !important;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  margin-right: 0 !important; /* Override inline styles */
+}
+
+.nav-brand a span {
+  background: linear-gradient(135deg, #ffffff 0%, #a0a0a8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
 /* Responsive Navbar */
 .navbar {
   display: flex;
@@ -158,3 +238,6 @@ body.modal-open {
     padding: 0 16px;
   }
 }
+
+.brand-logo { height: 40px; width: auto; object-fit: contain; }
+

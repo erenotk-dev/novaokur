@@ -53,13 +53,41 @@ const INFO_PAGES: Record<string, any> = {
     `
   },
   '/privacy': {
-    title: 'Gizlilik ve Çerez Politikası',
+    title: 'Gizlilik Politikası',
     icon: <FileText size={32} className="text-secondary" />,
     content: `
       <h2>Verileriniz Güvende</h2>
       <p>NovaOkur platformunda SSL şifreleme yöntemleri (256-bit) kullanılmaktadır. Kredi kartı bilgileriniz sunucularımızda saklanmaz, doğrudan güvenli ödeme altyapısı (Mock) ile bankanıza iletilir.</p>
-      <h2>Çerezler (Cookies) Neden Kullanılır?</h2>
-      <p>Kullanıcı deneyimini artırmak (örneğin sepetinizi kaydetmek), site trafiklerini analiz etmek ve size uygun edebiyat önerileri sunabilmek için cihazınızda ufak çerez dosyaları barındırıyoruz.</p>
+      <h2>Kişisel Verilerin İşlenmesi</h2>
+      <p>Üyelik ve sipariş esnasında paylaştığınız ad, soyad, e-posta ve adres bilgileri yalnızca siparişlerinizin teslimatı ve bilgilendirme amacıyla kullanılır. Üçüncü şahıslarla asla paylaşılmaz.</p>
+    `
+  },
+  '/terms': {
+    title: 'Kullanım Şartları',
+    icon: <FileText size={32} className="text-secondary" />,
+    content: `
+      <h2>1. Giriş ve Hizmet Kapsamı</h2>
+      <p>NovaOkur platformuna üye olarak veya platformu ziyaret ederek bu Kullanım Şartları'nı tamamen kabul etmiş sayılırsınız. Platformumuz, kullanıcılarına basılı kitap ve dergi satışı ile dijital içerik abonelik hizmetleri sunmaktadır.</p>
+      <h2>2. Üyelik ve Güvenlik</h2>
+      <p>Platformumuzda hesap oluştururken verdiğiniz bilgilerin doğruluğundan siz sorumlusunuzdur. Şifrenizin gizliliğini korumak ve hesabınız üzerinden yapılan tüm aktivitelerin sorumluluğu tamamen tarafınıza aittir.</p>
+      <h2>3. Fikri Mülkiyet Hakları</h2>
+      <p>NovaOkur platformunda yer alan tüm tasarımlar, logolar, yazılımlar, metinler ve dijital kitap/dergi içerikleri NovaOkur'un veya lisans verenlerinin fikri mülkiyetindedir. Yazılı izin olmaksızın kopyalanamaz, çoğaltılamaz veya dağıtılamaz.</p>
+    `
+  },
+  '/cookies': {
+    title: 'Çerez Politikası',
+    icon: <FileText size={32} className="text-secondary" />,
+    content: `
+      <h2>Çerez (Cookie) Nedir?</h2>
+      <p>Çerezler, web sitemizi ziyaret ettiğinizde tarayıcınız aracılığıyla cihazınıza kaydedilen küçük metin dosyalarıdır. Sitemizin düzgün çalışması ve size daha iyi bir kullanıcı deneyimi sunabilmek için çerezlerden faydalanıyoruz.</p>
+      <h2>Hangi Çerezleri Kullanıyoruz?</h2>
+      <ul>
+         <li><strong>Zorunlu Çerezler:</strong> Sepetinizi kaydetmek ve güvenli giriş yapabilmeniz gibi temel işlevler için kesinlikle gereklidir.</li>
+         <li><strong>Performans Çerezleri:</strong> Sitemizi nasıl kullandığınızı analiz ederek performansımızı artırmamıza yardımcı olur.</li>
+         <li><strong>İşlevsel Çerezler:</strong> Dil tercihleriniz veya kullanıcı adınız gibi seçimlerinizi hatırlayarak size özel bir deneyim sunar.</li>
+      </ul>
+      <h2>Çerez Tercihlerini Nasıl Yönetebilirsiniz?</h2>
+      <p>Çoğu tarayıcı çerezleri otomatik olarak kabul eder. Dilerseniz tarayıcınızın ayarlar menüsünden çerezleri tamamen engelleyebilir veya çerez geldiğinde uyarı verilmesini sağlayabilirsiniz. Ancak zorunlu çerezleri engellemeniz durumunda web sitemizin bazı fonksiyonları (örneğin sepet sistemi) düzgün çalışmayabilir.</p>
     `
   }
 };
@@ -85,7 +113,11 @@ const InfoPage = () => {
     <div className="info-layout">
       {/* Navbar Ozet */}
       <nav className="glass-panel navbar" style={{ position: 'relative', marginTop: '24px', marginBottom: '40px' }}>
-        <div className="nav-brand"><a href="/">NovaOkur</a></div>
+        <div className="nav-brand">
+          <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src="/logo.svg" alt="NovaOkur Logo" className="brand-logo" />
+          </a>
+        </div>
         <div className="nav-links">
            <a href="/products">Ürünler</a>
         </div>

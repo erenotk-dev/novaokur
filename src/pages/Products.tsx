@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Search, Filter, ShoppingCart, Eye, X, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
+import toast from 'react-hot-toast';
 import '../styles/Products.css';
 
 interface Product {
@@ -68,9 +69,8 @@ const Products = () => {
       {/* Navbar (Ortak Bilesenler Olarak Ayrilacak) */}
       <nav className="glass-panel navbar">
         <div className="nav-brand">
-          <a href="/">
-            <BookOpen className="brand-icon" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '8px' }} />
-            <span>NovaOkur</span>
+          <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src="/logo.svg" alt="NovaOkur Logo" className="brand-logo" />
           </a>
         </div>
         <div className="nav-links">
@@ -131,6 +131,7 @@ const Products = () => {
                          onClick={(e) => {
                             e.preventDefault();
                             addItem({ id: product.id, title: product.title, price: product.price, imageUrl: product.imageUrl, type: product.type, format: product.format });
+                            toast.success("Sepete eklendi!");
                          }}
                          className="btn btn-primary btn-sm"
                       >
@@ -163,6 +164,7 @@ const Products = () => {
                        <button 
                           onClick={() => {
                              addItem({ id: previewItem.id, title: previewItem.title, price: previewItem.price, imageUrl: previewItem.imageUrl, type: previewItem.type, format: previewItem.format });
+                             toast.success("Sepete eklendi!");
                              setPreviewItem(null);
                           }}
                           className="btn btn-primary w-full mt-4"

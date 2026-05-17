@@ -51,7 +51,11 @@ const Blog = () => {
     <div className="blog-layout">
       {/* Navbar Ozet */}
       <nav className="glass-panel navbar" style={{ position: 'relative', marginTop: '24px', marginBottom: '40px' }}>
-        <div className="nav-brand"><a href="/">NovaOkur</a></div>
+        <div className="nav-brand">
+          <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src="/logo.svg" alt="NovaOkur Logo" className="brand-logo" />
+          </a>
+        </div>
         <div className="nav-links">
           <a href="/products">Mağaza</a>
           <a href="/blog" className="active-link">Blog</a>
@@ -112,10 +116,7 @@ const Blog = () => {
           )}
         </div>
         
-        {/* Daha Fazla Yukle Alani */}
-        <div style={{ textAlign: 'center', marginTop: '60px' }} className="delay-3">
-           <button className="btn btn-outline" style={{ padding: '12px 32px' }}>Daha Fazla Yazı Yükle</button>
-        </div>
+
       </div>
     </div>
   );

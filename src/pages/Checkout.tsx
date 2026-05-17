@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useCartStore } from '../store/cartStore';
-import { CreditCard, CheckCircle, ShieldCheck, MapPin, ArrowLeft, RefreshCw } from 'lucide-react';
+import { CreditCard, CheckCircle, ShieldCheck, MapPin, ArrowLeft, RefreshCw, XCircle } from 'lucide-react';
+import axios from 'axios';
 import '../styles/Checkout.css';
 
 const SUB_PLANS: Record<string, {name: string, price: number}> = {
@@ -15,13 +16,11 @@ const Checkout = () => {
   
   const [isSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<'success' | 'failed' | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     address: '',
-    city: '',
-    cardNumber: '',
-    expiry: '',
-    cvv: ''
+    city: ''
   });
 
   useEffect(() => {
@@ -32,7 +31,15 @@ const Checkout = () => {
     if (type === 'subscription' && planId && SUB_PLANS[planId]) {
       setCheckoutType('subscription');
       setSubPlanDetails(SUB_PLANS[planId]);
-    } else if (items.length === 0 && !isSuccess) {
+    }
+    
+    const status = searchParams.get('status');
+    if (status === 'success') {
+      setPaymentStatus('success');
+      clearCart();
+    } else if (status === 'failed') {
+      setPaymentStatus('failed');
+    } else if (items.length === 0 && !isSuccess && status !== 'success') {
       window.location.href = '/cart';
     }
   }, [items, isSuccess]);
@@ -44,22 +51,35 @@ const Checkout = () => {
     return getTotalPrice() + (getTotalPrice() > 150 ? 0 : 29.9);
   };
 
-  const handlePayment = (e: React.FormEvent) => {
+  const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
-    // Sahte Odeme Simulasyonu (2.5 saniye)
-    setTimeout(() => {
-      setLoading(false); // Changed from setIsProcessing to setLoading
-      clearCart();
-      alert(`🎉 Ödemeniz başarıyla alındı! \n\nSipariş Numaranız: NVK-${Math.floor(Math.random() * 1000000)}\n\nMüşteri İlişkileri: Siparişinizin detayları ve "Canlı Kargo Takip" linki e-posta adresinize gönderilmiştir.`);
-      
-      // Iletisim ve Musteri Iliskileri sayfalarina yonlendirilebilir veya anasayfaya
-      window.location.href = '/';
-    }, 2000); // Changed timeout to 2000ms
+    try {
+      // Backend'e odeme baslatma istegi at
+      const res = await axios.post('http://localhost:3001/api/payments/initialize', {
+        buyerName: formData.name,
+        address: formData.address,
+        city: formData.city,
+        items: items,
+        totalPrice: calculateTotal()
+      });
+
+      if (res.data && res.data.status === 'success' && res.data.paymentPageUrl) {
+        // Iyzico odeme sayfasina yonlendir
+        window.location.href = res.data.paymentPageUrl;
+      } else {
+        alert("Ödeme başlatılamadı: " + (res.data.errorMessage || 'Bilinmeyen Hata (Eğer test API key kullanıyorsanız normaldir)'));
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Ödeme başlatılırken bir hata oluştu.");
+      setLoading(false);
+    }
   };
 
-  if (isSuccess) {
+  if (paymentStatus === 'success' || isSuccess) {
     return (
       <div className="checkout-layout success-screen">
         <div className="glass-panel success-card animate-fade-in">
@@ -67,9 +87,26 @@ const Checkout = () => {
              <CheckCircle size={64} color="#34d399" />
           </div>
           <h1>Ödeme Başarılı!</h1>
-          <p className="text-secondary mb-4">Siparişiniz (#NOVR-{Math.floor(1000 + Math.random() * 9000)}) başarıyla alınmıştır. Bizi tercih ettiğiniz için teşekkür ederiz.</p>
+          <p className="text-secondary mb-4">Siparişiniz (#NOVR-{Math.floor(1000 + Math.random() * 9000)}) başarıyla alınmıştır. İyzico güvencesiyle ödemeniz tamamlandı.</p>
           <a href={checkoutType === 'subscription' ? "/profile" : "/products"} className="btn btn-primary">
              {checkoutType === 'subscription' ? 'Aboneliğimi Gör' : 'Alışverişe Dön'}
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  if (paymentStatus === 'failed') {
+    return (
+      <div className="checkout-layout success-screen">
+        <div className="glass-panel success-card animate-fade-in" style={{ borderColor: '#ef4444' }}>
+          <div className="success-icon-wrapper" style={{ background: 'rgba(239, 68, 68, 0.2)' }}>
+             <XCircle size={64} color="#ef4444" />
+          </div>
+          <h1 style={{ color: '#ef4444' }}>Ödeme Başarısız</h1>
+          <p className="text-secondary mb-4">Ödemeniz alınırken bir sorun oluştu veya işlemi iptal ettiniz.</p>
+          <a href="/cart" className="btn btn-outline" style={{ borderColor: '#ef4444', color: '#ef4444' }}>
+             Sepete Dön ve Tekrar Dene
           </a>
         </div>
       </div>
@@ -80,7 +117,11 @@ const Checkout = () => {
     <div className="checkout-layout">
       {/* Navbar Ozet */}
       <nav className="glass-panel navbar" style={{ position: 'relative', marginTop: '24px', marginBottom: '40px' }}>
-        <div className="nav-brand"><a href="/">NovaOkur</a></div>
+        <div className="nav-brand">
+          <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src="/logo.svg" alt="NovaOkur Logo" className="brand-logo" />
+          </a>
+        </div>
         <div className="nav-links">
            <a href="/cart" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-secondary)' }}>
               <ArrowLeft size={18} /> Sepete Dön
@@ -120,25 +161,13 @@ const Checkout = () => {
               </>
             )}
 
-            <h3 className="form-section-title"><CreditCard size={20} /> Kart Bilgileri (Mock)</h3>
-            <div className="floating-group">
-               <input required type="text" id="card" placeholder=" " maxLength={19} value={formData.cardNumber} onChange={e => setFormData({...formData, cardNumber: e.target.value})} />
-               <label htmlFor="card">Kart Numarası</label>
-            </div>
-            
-            <div className="form-row">
-              <div className="floating-group">
-                 <input required type="text" id="expiry" placeholder=" " maxLength={5} value={formData.expiry} onChange={e => setFormData({...formData, expiry: e.target.value})} />
-                 <label htmlFor="expiry">Son Kullanma (AA/YY)</label>
-              </div>
-              <div className="floating-group">
-                 <input required type="text" id="cvv" placeholder=" " maxLength={3} value={formData.cvv} onChange={e => setFormData({...formData, cvv: e.target.value})} />
-                 <label htmlFor="cvv">CVV Güvenlik Kodu</label>
-              </div>
-            </div>
+            <h3 className="form-section-title"><CreditCard size={20} /> Ödeme Yöntemi</h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '24px' }}>
+              "Ödemeyi Tamamla" butonuna tıkladığınızda <strong>İyzico Güvenli Ödeme Sayfasına</strong> yönlendirileceksiniz. Kredi kartı bilgilerinizi banka güvencesiyle İyzico ekranında girebilirsiniz.
+            </p>
 
             <button type="submit" className="btn btn-primary w-full pay-btn" disabled={loading}>
-               {loading ? 'İşleminiz Gerçekleştiriliyor...' : `Ödemeyi Tamamla • ${calculateTotal().toFixed(2)} ₺`}
+               {loading ? 'İyzico\'ya Yönlendiriliyor...' : `İyzico ile Öde • ${calculateTotal().toFixed(2)} ₺`}
             </button>
             <div className="payment-trust-signals">
                <span className="card-brand visa">VISA</span>

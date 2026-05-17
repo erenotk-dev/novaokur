@@ -1,20 +1,56 @@
-import { BookOpen, MapPin, Phone, Mail, ShieldCheck, CreditCard, Clock } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { BookOpen, MapPin, Phone, Mail, ShieldCheck, CreditCard, Clock, Instagram, Twitter } from 'lucide-react';
 import '../styles/Footer.css';
 
 const Footer = () => {
+  const [socialLinks, setSocialLinks] = useState({ 
+    instagram: 'https://instagram.com/novaokur', 
+    twitter: 'https://twitter.com/novaokur' 
+  });
+
+  useEffect(() => {
+    axios.get('https://novaokur.onrender.com/api/settings')
+      .then(res => {
+        if (res.data) {
+          // Eger veritabanindan null gelirse gizlemek icin bos string aliyoruz, 
+          // eger deger varsa o degeri atiyoruz. Ancak yeni eklendigi icin
+          // eger undefined gelirse (eski sunucu) varsayilanlari bozmuyoruz.
+          if (res.data.instagramUrl !== undefined) {
+             setSocialLinks({
+               instagram: res.data.instagramUrl || '',
+               twitter: res.data.twitterUrl || ''
+             });
+          }
+        }
+      })
+      .catch(err => console.error("Ayarlar alinamadi (Sunucu henuz guncellenmemis olabilir)", err));
+  }, []);
+
   return (
     <footer className="glass-panel site-footer">
       <div className="container footer-grid">
         
         {/* Brand & About */}
         <div className="footer-col brand-col">
-          <div className="nav-brand">
-            <BookOpen className="brand-icon" />
-            <span>NovaOkur</span>
+          <div className="nav-brand" style={{ marginBottom: '20px' }}>
+            <img src="/logo.svg" alt="NovaOkur Logo" className="brand-logo" style={{ height: '40px', width: 'auto', objectFit: 'contain' }} />
           </div>
           <p className="footer-desc">
             Sınırsız bilgi ve hikaye evreni. Dijital arşivimize limitsiz erişim sağlayın veya her ay kapınıza fiziksel dergi/kitap getiren Premium aboneliklerimizle okuma alışkanlığınızı baştan yaratın.
           </p>
+          <div className="social-links" style={{ display: 'flex', gap: '15px', marginTop: '15px', marginBottom: '20px' }}>
+            {socialLinks.instagram && (
+              <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="social-icon" style={{ color: 'var(--text-secondary)', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#E1306C'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}>
+                <Instagram size={24} />
+              </a>
+            )}
+            {socialLinks.twitter && (
+              <a href={socialLinks.twitter} target="_blank" rel="noopener noreferrer" className="social-icon" style={{ color: 'var(--text-secondary)', transition: 'color 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.color = '#1DA1F2'} onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}>
+                <Twitter size={24} />
+              </a>
+            )}
+          </div>
           <div className="trust-badges">
             <div className="trust-badge-item"><ShieldCheck size={18}/> <span>256-Bit SSL Güvencesi</span></div>
             <div className="trust-badge-item"><CreditCard size={18}/> <span>Güvenli Ödeme Altyapısı</span></div>

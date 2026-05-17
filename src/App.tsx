@@ -15,10 +15,17 @@ import Contact from './pages/Contact'
 import InfoPage from './pages/InfoPage'
 import ProductDetail from './pages/ProductDetail'
 import BlogDetail from './pages/BlogDetail'
+import GlobalBackground from './components/GlobalBackground'
+
+import { Toaster } from 'react-hot-toast'
+import ExitIntentPopup from './components/ExitIntentPopup'
 
 function App() {
   return (
     <BrowserRouter>
+      <GlobalBackground />
+      <Toaster position="bottom-right" toastOptions={{ style: { background: '#333', color: '#fff', borderRadius: '10px' } }} />
+      <ExitIntentPopup />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/products" element={<Products />} />
@@ -35,6 +42,8 @@ function App() {
         <Route path="/returns" element={<InfoPage />} />
         <Route path="/shipping" element={<InfoPage />} />
         <Route path="/privacy" element={<InfoPage />} />
+        <Route path="/terms" element={<InfoPage />} />
+        <Route path="/cookies" element={<InfoPage />} />
         
         {/* Sadece ADMIN Rolundeki Kullanicilar Girebilir */}
         <Route element={<AdminRoute />}>

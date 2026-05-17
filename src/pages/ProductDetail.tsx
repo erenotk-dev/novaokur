@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ShoppingCart, Star, MessageSquare, ArrowLeft, ArrowRight, TrendingUp } from 'lucide-react';
+import { ShoppingCart, Star, MessageSquare, ArrowLeft, ArrowRight, TrendingUp, BookOpen } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
+import toast from 'react-hot-toast';
 import '../styles/ProductDetail.css';
 
 interface Product {
@@ -39,6 +40,8 @@ const ProductDetail = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   
   const addItem = useCartStore(state => state.addItem);
+  const cartItems = useCartStore(state => state.items);
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
   const userStr = localStorage.getItem('nova_user');
   const user = userStr ? JSON.parse(userStr) : null;
 
@@ -71,7 +74,7 @@ const ProductDetail = () => {
   const handleReviewSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) {
-      alert("Yorum yapabilmek için lütfen giriş yapınız.");
+      toast.error("Yorum yapabilmek için lütfen giriş yapınız.");
       navigate('/auth/login');
       return;
     }
@@ -91,7 +94,7 @@ const ProductDetail = () => {
       setNewRating(5);
     } catch (error) {
       console.error(error);
-      alert("Yorum eklenirken hata olustu.");
+      toast.error("Yorum eklenirken hata olustu.");
     } finally {
       setIsSubmitting(false);
     }
@@ -103,9 +106,22 @@ const ProductDetail = () => {
     <div className="product-detail-layout">
       {/* Basit Navbar */}
       <nav className="glass-panel navbar" style={{ position: 'relative', marginTop: '24px', marginBottom: '40px' }}>
-        <div className="nav-brand"><a href="/">NovaOkur</a></div>
+        <div className="nav-brand">
+          <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src="/logo.svg" alt="NovaOkur Logo" className="brand-logo" />
+          </a>
+        </div>
         <div className="nav-links">
-           <a href="/products">Geri Dön</a>
+          <a href="/products">Ürünler</a>
+          <a href="/blog">Blog</a>
+          <a href="/cart" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <ShoppingCart size={20}/>
+            {cartCount > 0 && (
+              <span className="cart-badge" style={{ position: 'absolute', top: '-8px', right: '-12px', background: 'var(--accent-color)', color: 'white', fontSize: '0.7rem', padding: '2px 6px', borderRadius: '10px', fontWeight: 'bold' }}>
+                {cartCount}
+              </span>
+            )}
+          </a>
         </div>
       </nav>
 
@@ -142,7 +158,7 @@ const ProductDetail = () => {
                 className="btn btn-primary add-to-cart-lg"
                 onClick={() => {
                   addItem({ id: product.id, title: product.title, price: product.price, imageUrl: product.imageUrl, type: product.type, format: product.format });
-                  alert("Sepete eklendi!");
+                  toast.success("Sepete eklendi!");
                 }}
              >
                 <ShoppingCart size={20} /> Sepete Ekle

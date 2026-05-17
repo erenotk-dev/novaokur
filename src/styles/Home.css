@@ -2,8 +2,6 @@
   position: relative;
   width: 100%;
   min-height: 100vh;
-  /* Koyu, dinamik bir arka plan gecisi */
-  background: radial-gradient(circle at top right, #1a1a2e 0%, var(--bg-primary) 50%, #0f0f13 100%);
   overflow-x: hidden;
 }
 
@@ -132,6 +130,8 @@
 
 .home-section {
   margin-top: 80px;
+  position: relative;
+  z-index: 2;
 }
 
 .section-header {

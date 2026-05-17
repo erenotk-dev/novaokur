@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { BookOpen, TrendingUp, Star, ShoppingCart, ArrowRight } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
+import toast from 'react-hot-toast';
 import '../styles/Home.css';
 
 const Home = () => {
@@ -47,13 +48,17 @@ const Home = () => {
     fetchData();
   }, []);
 
+
+
   return (
     <div className="home-wrapper">
+
       {/* Navbar Ozet */}
-      <nav className="glass-panel navbar">
+      <nav className="glass-panel navbar" style={{ position: 'relative', zIndex: 10 }}>
         <div className="nav-brand">
-          <BookOpen className="brand-icon" />
-          <span>NovaOkur</span>
+          <a href="/" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src="/logo.svg" alt="NovaOkur Logo" className="brand-logo" />
+          </a>
         </div>
         <div className="nav-links">
           <a href="/products">Ürünler</a>
@@ -79,7 +84,7 @@ const Home = () => {
 
       {/* Hero (Kahraman) Alani */}
       <header className="hero-section">
-        <div className="hero-content animate-fade-in">
+        <div className="hero-content animate-fade-in" style={{ position: 'relative', zIndex: 2 }}>
           <h1>
              {settings?.heroTitle ? (
                // Simple split if there are multiple words, but generally we just display it.
@@ -141,6 +146,7 @@ const Home = () => {
                          onClick={(e) => {
                             e.preventDefault();
                             addItem({ id: product.id, title: product.title, price: product.price, imageUrl: product.imageUrl, type: product.type, format: product.format });
+                            toast.success("Sepete eklendi!");
                          }} 
                          className="btn btn-primary btn-sm btn-icon-only"
                       >
