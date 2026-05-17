@@ -3,13 +3,21 @@ import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import Iyzipay from 'iyzipay';
+
+const iyzipay = new Iyzipay({
+  apiKey: 'sandbox-apiKeyMOCK', // TODO: Gercek Sandbox veya Canli API Key
+  secretKey: 'sandbox-secretKeyMOCK', // TODO: Gercek Sandbox veya Canli Secret Key
+  uri: 'https://sandbox-api.iyzipay.com'
+});
 
 const app = express();
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'varsayilan-guvenli-sifre'; 
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // --- URUN (PRODUCT) ENDPOINT'LERI ---
 
@@ -25,13 +33,14 @@ app.get('/api/products', async (req, res) => {
 
 // Yeni urun ekle
 app.post('/api/products', async (req, res) => {
-  const { title, description, price, type, format, stock, imageUrl } = req.body;
+  const { title, description, price, costPrice, type, format, stock, imageUrl } = req.body;
   try {
     const newProduct = await prisma.product.create({
       data: {
         title,
         description,
         price: parseFloat(price),
+        costPrice: costPrice ? parseFloat(costPrice) : 0,
         type,
         format,
         stock: parseInt(stock),
@@ -54,6 +63,30 @@ app.delete('/api/products/:id', async (req, res) => {
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: "Urun silinemedi." });
+  }
+});
+
+// Urunu guncelle
+app.put('/api/products/:id', async (req, res) => {
+  const { title, description, price, costPrice, type, format, stock, imageUrl } = req.body;
+  try {
+    const updatedProduct = await prisma.product.update({
+      where: { id: req.params.id },
+      data: {
+        title,
+        description,
+        price: price ? parseFloat(price) : undefined,
+        costPrice: costPrice !== undefined ? parseFloat(costPrice) : undefined,
+        type,
+        format,
+        stock: stock !== undefined ? parseInt(stock) : undefined,
+        imageUrl
+      }
+    });
+    res.json(updatedProduct);
+  } catch (error) {
+    console.error("Urun Guncelleme Hatasi:", error);
+    res.status(500).json({ error: "Urun guncellenemedi." });
   }
 });
 
@@ -136,6 +169,24 @@ app.post('/api/posts', async (req, res) => {
   } catch (error) {
     console.error("Blog Ekleme Hatasi:", error);
     res.status(500).json({ error: "Blog yazısı eklenemedi." });
+  }
+});
+
+app.put('/api/posts/:id', async (req, res) => {
+  const { title, content, imageUrl } = req.body;
+  try {
+    const updatedPost = await prisma.post.update({
+      where: { id: req.params.id },
+      data: {
+        title,
+        content,
+        imageUrl
+      }
+    });
+    res.json(updatedPost);
+  } catch (error) {
+    console.error("Blog Guncelleme Hatasi:", error);
+    res.status(500).json({ error: "Blog guncellenemedi." });
   }
 });
 
@@ -252,6 +303,129 @@ app.get('/api/recommendations/:productId', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Oneriler getirilemedi." });
   }
+});
+
+// --- SETTINGS ENDPOINTS ---
+
+app.get('/api/settings', async (req, res) => {
+  try {
+    let settings = await prisma.siteSettings.findFirst();
+    if (!settings) {
+      settings = await prisma.siteSettings.create({
+        data: {}
+      });
+    }
+    res.json(settings);
+  } catch (error) {
+    res.status(500).json({ error: "Ayarlar getirilemedi." });
+  }
+});
+
+app.post('/api/settings', async (req, res) => {
+  const { heroTitle, heroSubtitle, bannerTitle, bannerDesc, instagramUrl, twitterUrl } = req.body;
+  try {
+    const settings = await prisma.siteSettings.findFirst();
+    let updated;
+    if (settings) {
+      updated = await prisma.siteSettings.update({
+        where: { id: settings.id },
+        data: { heroTitle, heroSubtitle, bannerTitle, bannerDesc, instagramUrl, twitterUrl }
+      });
+    } else {
+      updated = await prisma.siteSettings.create({
+        data: { heroTitle, heroSubtitle, bannerTitle, bannerDesc, instagramUrl, twitterUrl }
+      });
+    }
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ error: "Ayarlar guncellenemedi." });
+  }
+});
+
+// --- IYZICO ODEME ENTEGRASYONU ---
+
+app.post('/api/payments/initialize', async (req, res) => {
+  const { buyerName, address, city, items, totalPrice } = req.body;
+  
+  // Basit Iyzico Istek Modeli
+  const request = {
+    locale: Iyzipay.LOCALE.TR,
+    conversationId: 'NOVA-' + Date.now(),
+    price: totalPrice.toString(),
+    paidPrice: totalPrice.toString(),
+    currency: Iyzipay.CURRENCY.TRY,
+    basketId: 'B-' + Date.now(),
+    paymentGroup: Iyzipay.PAYMENT_GROUP.PRODUCT,
+    callbackUrl: 'http://localhost:5173/api/payments/callback', // Gercekte uygulamanin veya backend'in callback URL'si
+    enabledInstallments: [2, 3, 6, 9],
+    buyer: {
+      id: 'BY789',
+      name: buyerName.split(' ')[0] || 'Nova',
+      surname: buyerName.split(' ').slice(1).join(' ') || 'Okur',
+      gsmNumber: '+905350000000',
+      email: 'email@email.com',
+      identityNumber: '74300864791',
+      lastLoginDate: '2023-10-05 12:43:35',
+      registrationDate: '2023-04-21 15:12:09',
+      registrationAddress: address,
+      ip: req.ip || '85.34.78.112',
+      city: city,
+      country: 'Turkey',
+      zipCode: '34732'
+    },
+    shippingAddress: {
+      contactName: buyerName,
+      city: city,
+      country: 'Turkey',
+      address: address,
+      zipCode: '34742'
+    },
+    billingAddress: {
+      contactName: buyerName,
+      city: city,
+      country: 'Turkey',
+      address: address,
+      zipCode: '34742'
+    },
+    basketItems: items.map((item: any) => ({
+      id: item.id || 'BI101',
+      name: item.title || 'Urun',
+      category1: 'Kategori',
+      itemType: Iyzipay.BASKET_ITEM_TYPE.PHYSICAL,
+      price: (item.price * item.quantity).toString()
+    }))
+  };
+
+  iyzipay.checkoutFormInitialize.create(request, (err: any, result: any) => {
+    if (err) {
+      console.error("Iyzico Error:", err);
+      return res.status(500).json({ error: "Ödeme başlatılamadı." });
+    }
+    // Result icinde paymentPageUrl ve token bulunur.
+    res.json(result);
+  });
+});
+
+app.post('/api/payments/callback', async (req, res) => {
+  // Iyzico bu adrese POST atar
+  const { token } = req.body;
+  
+  if (!token) {
+    return res.redirect('http://localhost:5173/checkout?status=failed');
+  }
+
+  // Token'i Iyzico'dan dogrula
+  iyzipay.checkoutForm.retrieve({
+    locale: Iyzipay.LOCALE.TR,
+    conversationId: '123456789',
+    token: token
+  }, (err: any, result: any) => {
+    if (err || result.status !== 'success') {
+      return res.redirect('http://localhost:5173/checkout?status=failed');
+    }
+    // Odeme basarili, kullaniciyi frontend basarili sayfasina yonlendir
+    res.redirect('http://localhost:5173/checkout?status=success');
+  });
 });
 
 const PORT = 3001;
