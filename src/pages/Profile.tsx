@@ -22,7 +22,7 @@ const Profile = () => {
   if (!user) return <div style={{ color: 'white', padding: '40px', textAlign: 'center' }}>Yükleniyor...</div>;
 
   return (
-    <div style={{ minHeight: '100vh', padding: '80px 24px' }}>
+    <div className="profile-layout" style={{ minHeight: '100vh', padding: '80px 24px' }}>
       <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
         
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px' }}>

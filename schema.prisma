@@ -34,6 +34,7 @@ model Product {
   title       String
   description String?
   price       Float
+  costPrice   Float     @default(0)
   stock       Int       @default(0)
   imageUrl    String?
   type        String    @default("BOOK") // "BOOK" veya "MAGAZINE"
@@ -140,5 +141,7 @@ model SiteSettings {
   heroSubtitle   String   @default("Binlerce kitap ve dergi bir tık uzağında. İster dijital oku, ister fiziksel kütüpheneni büyüt. Aylık aboneliklerle sınırları kaldır.")
   bannerTitle    String   @default("NovaOkur Premium")
   bannerDesc     String   @default("Dijital kitap arşivine limitsiz erişim ve her ay kapına gelen ücretsiz fiziksel dergiler... Okuma deneyimini baştan yaratmaya hazır mısın?")
+  instagramUrl   String?  @default("https://instagram.com/novaokur")
+  twitterUrl     String?  @default("https://twitter.com/novaokur")
   updatedAt      DateTime @updatedAt
 }
